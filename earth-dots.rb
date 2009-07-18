@@ -3,13 +3,13 @@ $LOAD_PATH << 'vendor/hpricot/lib'
 require 'open-uri'
 require 'vendor/hpricot/lib/hpricot'
 require 'lib/globe'
-require 'lib/seer'
+require 'lib/dot_gov'
 require 'lib/location'
 
 class WorldWide < Processing::App
 
   load_library 'opengl', 'control_panel'
-    
+        
   def setup
     @mouse_sensitivity = 0.03
     @push_back = 0
@@ -17,11 +17,13 @@ class WorldWide < Processing::App
     @vel_x, @vel_y = 0, 0
     
     @globe = Globe.new
-    @locations = Location::COORDS.map {|pair| Location.new(*pair) }
+    @source = DotGov.new
+    @locations = @source.earthquakes
     
     no_stroke
     smooth
     texture_mode IMAGE
+    ellipse_mode CENTER
     size(700, 700, OPENGL)
   end
   
@@ -32,8 +34,10 @@ class WorldWide < Processing::App
     translate width/2, height/2, @push_back
     rotate_x radians(-@rot_x)
     rotate_y radians(270 - @rot_y)
+    fill 255
     @globe.draw
-    @locations.each {|l| l.draw(@globe.diameter) }
+    fill 100, 255, 255, 155
+    @locations.each {|l| l.draw(@globe.diameter) }  
     pop_matrix
     update_position
   end

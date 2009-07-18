@@ -6,21 +6,13 @@
 
 class Location
   
-  COORDS = [
-    [0.0,      0.0],      # The Origin
-    [37.77,   -122.41],   # San Francisco
-    [40.77,   -73.97],    # Central Park
-    [19.78,   -155.01],   # Mauna Kea
-    [30.06,    31.24]     # Cairo
-  ]
-  
   include Processing::Proxy
   include Math
   
-  attr_reader :latitude, :longitude
+  attr_reader :latitude, :longitude, :magnitude
   
-  def initialize(latitude, longitude)
-    @latitude, @longitude = latitude, longitude 
+  def initialize(latitude, longitude, magnitude)
+    @latitude, @longitude, @magnitude = latitude, longitude, magnitude
   end
   
   def draw(diameter)
@@ -32,7 +24,9 @@ class Location
     z = radius * cos(lat) * cos(long)
     push_matrix
     translate x, y, z
-    sphere 1
+    rotate_y(long)
+    rotate_x(-lat)
+    oval 0, 0, @magnitude, @magnitude
     pop_matrix
   end
   
