@@ -17,7 +17,7 @@ class WorldWide < Processing::App
     
     @mouse_sensitivity = 0.03
     @push_back = 0
-    @rot_x, @rot_y = 0, 0
+    @rot_x, @rot_y = 25, 0 # Center on the ol' US of A.
     @vel_x, @vel_y = 0, 0
     @globe = Globe.new
     @source = DotGov.new
@@ -38,7 +38,7 @@ class WorldWide < Processing::App
     push_matrix
     translate width/2, height/2, @push_back
     rotate_x radians(-@rot_x)
-    rotate_y radians(270 - @rot_y)
+    rotate_y radians(-@rot_y)
     @globe.draw
     @locations.each_with_index {|loc, i| loc.draw(i == @selected) }
     pop_matrix
@@ -57,7 +57,7 @@ class WorldWide < Processing::App
     @buffer.no_stroke
     @buffer.translate width/2, height/2, @push_back
     @buffer.rotate_x radians(-@rot_x)
-    @buffer.rotate_y radians(270 - @rot_y)
+    @buffer.rotate_y radians(-@rot_y)
     @locations.each_with_index {|l, i| l.draw_for_picking(i, @buffer) }
     @selected = red(@buffer.get(mouse_x, mouse_y)).to_i
     @buffer.end_draw
