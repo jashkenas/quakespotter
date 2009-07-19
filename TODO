@@ -1,0 +1,11 @@
+TODO:
+* Nice textual display of info for a quake.
+* Pretty glowing OPENGL bars or mounds coming up out of each quake.
+* Use arrow keys to tab around quakes, sorted by longitude.
+* Optimize the globe-rendering code.
+* Hook into the USGS's ground shake maps ... display 'em.
+* Volcanoes too?
+* Make some epicenter-y graphics for quake badges. (color tint magnitude?)
+
+
+DONE:

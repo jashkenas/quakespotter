@@ -26,8 +26,10 @@ class WorldWide < Processing::App
     
     no_stroke
     smooth
+    text_mode SCREEN
     texture_mode IMAGE
     ellipse_mode CENTER
+    text_font load_font('fonts/Monaco-12.vlw')
   end
   
   def draw
@@ -37,11 +39,16 @@ class WorldWide < Processing::App
     translate width/2, height/2, @push_back
     rotate_x radians(-@rot_x)
     rotate_y radians(270 - @rot_y)
-    fill 255
     @globe.draw
     @locations.each_with_index {|loc, i| loc.draw(i == @selected) }
     pop_matrix
+    fill 255
+    text(quake.text, 12, height-12, 0) if quake
     update_position
+  end
+  
+  def quake
+    @selected && @locations[@selected]
   end
   
   def mouse_pressed

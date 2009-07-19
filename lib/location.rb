@@ -11,11 +11,12 @@ class Location
   
   HOVER_RADIUS = 4
   
-  attr_reader :latitude, :longitude, :magnitude
+  attr_reader :latitude, :longitude, :magnitude, :text
   attr_accessor :index
   
-  def initialize(latitude, longitude, magnitude)
-    @latitude, @longitude, @magnitude = latitude, longitude, magnitude
+  def initialize(latitude, longitude, magnitude, text)
+    @latitude, @longitude = latitude, longitude
+    @magnitude, @text = magnitude, text
     @color = color(100, 255, 255, 155)
     compute_position
   end
