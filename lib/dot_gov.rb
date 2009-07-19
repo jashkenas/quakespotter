@@ -10,11 +10,11 @@ class DotGov
   attr_reader :earthquakes
   
   def initialize
-    @earthquakes = []
-    fetch_earthquakes
+    @earthquakes = fetch_earthquakes
   end
   
   def fetch_earthquakes
+    quakes = []
     xml = File.read('data/quakes.xml') if File.exists?('data/quakes.xml')
     xml = open(SOURCES[:quakes]).read unless xml
     doc = Hpricot xml
@@ -24,8 +24,10 @@ class DotGov
       mag = (entry / 'title').inner_html.match(MAGNITUDE_FINDER)[1].to_f
       # Faux Richter-scale adjustments to visual magnitude size.
       mag = (1.85 ** mag) / 3.6 + 1.5
-      @earthquakes << Location.new(point[0], point[1], mag)
+      quakes << Location.new(point[0], point[1], mag)
     end
+    
+    quakes.sort_by {|loc| loc.longitude }
   end
   
   

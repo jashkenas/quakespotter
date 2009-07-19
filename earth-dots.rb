@@ -9,22 +9,25 @@ require 'lib/location'
 class WorldWide < Processing::App
 
   load_library 'opengl', 'control_panel'
+  
+  attr_reader :globe, :selected
         
   def setup
+    size(700, 700, OPENGL)
+    
     @mouse_sensitivity = 0.03
     @push_back = 0
     @rot_x, @rot_y = 0, 0
     @vel_x, @vel_y = 0, 0
-    
     @globe = Globe.new
     @source = DotGov.new
     @locations = @source.earthquakes
+    @buffer = create_graphics(width, height, P3D)
     
     no_stroke
     smooth
     texture_mode IMAGE
     ellipse_mode CENTER
-    size(700, 700, OPENGL)
   end
   
   def draw
@@ -36,10 +39,21 @@ class WorldWide < Processing::App
     rotate_y radians(270 - @rot_y)
     fill 255
     @globe.draw
-    fill 100, 255, 255, 155
-    @locations.each {|l| l.draw(@globe.diameter) }  
+    @locations.each_with_index {|loc, i| loc.draw(i == @selected) }
     pop_matrix
     update_position
+  end
+  
+  def mouse_pressed
+    @buffer.begin_draw
+    @buffer.background 255
+    @buffer.no_stroke
+    @buffer.translate width/2, height/2, @push_back
+    @buffer.rotate_x radians(-@rot_x)
+    @buffer.rotate_y radians(270 - @rot_y)
+    @locations.each_with_index {|l, i| l.draw_for_picking(i, @buffer) }
+    @selected = red(@buffer.get(mouse_x, mouse_y)).to_i
+    @buffer.end_draw
   end
   
   def key_pressed
