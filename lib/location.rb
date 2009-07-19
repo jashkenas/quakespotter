@@ -32,6 +32,7 @@ class Location
   end
   
   def draw(selected)
+    return unless model_z(@x, @y, @z) > 1
     push_matrix
     translate @x, @y, @z
     fill selected ? 255 : @color
@@ -42,14 +43,13 @@ class Location
   end
   
   def draw_for_picking(index, buffer)
+    # return unless model_z(@x, @y, @z) > 1 # Not working for some reason.
     buffer.push_matrix
     buffer.translate @x, @y, @z
-    if model_z(0,0,0) < 1
-      buffer.fill index
-      buffer.rotate_y @longitude_radians
-      buffer.rotate_x -@latitude_radians
-      buffer.ellipse 0, 0, @magnitude, @magnitude
-    end
+    buffer.fill index
+    buffer.rotate_y @longitude_radians
+    buffer.rotate_x -@latitude_radians
+    buffer.ellipse 0, 0, @magnitude, @magnitude
     buffer.pop_matrix
   end
   
