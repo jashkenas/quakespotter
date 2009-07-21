@@ -8,12 +8,9 @@ require 'lib/location'
 
 class WorldWide < Processing::App
 
-  load_library 'opengl', 'control_panel'
-  import "processing.opengl"
-  import "javax.media.opengl"
+  load_library 'opengl'
   
-  attr_reader :globe, :selected
-  attr_accessor :constant
+  attr_reader :globe, :locations, :selected
         
   def setup
     size(750, 750, OPENGL)
@@ -22,22 +19,16 @@ class WorldWide < Processing::App
     @push_back = 0
     @rot_x, @rot_y = 25, 270 # Center on the ol' US of A.
     @vel_x, @vel_y = 0, 0
-    @constant = 0
     @globe = Globe.new
     @source = DotGov.new
     @locations = @source.earthquakes
     @buffer = create_graphics(width, height, P3D)
     
-    # control_panel do |c|
-    #   c.slider :constant, 0..200, 0
-    # end
-    
     no_stroke
-    smooth
     texture_mode IMAGE
     ellipse_mode CENTER
     image_mode   CENTER
-    text_font    load_font('fonts/Monaco-12.vlw')
+    text_font    load_font('fonts/AkzidenzGrotesk-Bold-14.vlw')
   end
   
   def draw
@@ -54,9 +45,9 @@ class WorldWide < Processing::App
     @locations.each_with_index {|loc, i| loc.draw unless i == @selected }
     selected_quake.draw(true) if selected_quake
     pop_matrix
-    fill 255
-    text("#{frame_rate.to_i} FPS", 12, height-30, 0)
-    text(selected_quake.text, 12, height-12, 0) if selected_quake
+    fill 200
+    text("#{frame_rate.to_i} FPS", 14, height-34, 0)
+    text(selected_quake.text, 14, height-14, 0) if selected_quake
     update_position
   end
   
@@ -75,7 +66,7 @@ class WorldWide < Processing::App
     @buffer.translate width/2, height/2, @push_back
     @buffer.rotate_x radians(-@rot_x)
     @buffer.rotate_y radians(270 - @rot_y)
-    @locations.each_with_index {|l, i| l.draw_for_picking(i, @buffer) }
+    @locations.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }
     result = red(@buffer.get(mouse_x, mouse_y)).to_i
     @selected = result if @locations[result]
     @buffer.end_draw

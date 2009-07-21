@@ -21,6 +21,7 @@ class Location
   def initialize(latitude, longitude, magnitude, text)
     @latitude, @longitude = latitude, longitude
     @magnitude, @text = magnitude, text
+    @hidden = false
     @color = color(100, 255, 255, 155)
     @image = (Location.epicenter ||= load_image "images/epicenter.png")
     @selected_image = (Location.epicenter_selected ||= load_image "images/epicenter_selected.png")
@@ -37,8 +38,12 @@ class Location
     @z = radius * cos(lat) * cos(long)
   end
   
+  def hidden?
+    @hidden
+  end
+  
   def draw(selected=false)
-    return unless model_z(@x, @y, @z) > HORIZON_Z
+    return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
     push_matrix
     translate @x, @y, @z
     rotate_y @longitude_radians
@@ -48,7 +53,6 @@ class Location
   end
   
   def draw_for_picking(index, buffer)
-    # return unless model_z(@x, @y, @z) > 1 # Not working for some reason.
     buffer.push_matrix
     buffer.translate @x, @y, @z
     buffer.fill index
