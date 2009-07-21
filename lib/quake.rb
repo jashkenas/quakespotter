@@ -4,10 +4,10 @@
 # z = r * cos(lat) * cos(long)
 # where r is radius, lat is latitude and long is longitude
 
-class Location
+class Quake
   
   class << self
-    attr_accessor :epicenter, :epicenter_selected
+    attr_accessor :image, :selected_image
   end
   
   HORIZON_Z = 100
@@ -23,11 +23,13 @@ class Location
     @magnitude, @text = magnitude, text
     @hidden = false
     @color = color(100, 255, 255, 155)
-    @image = (Location.epicenter ||= load_image "images/epicenter.png")
-    @selected_image = (Location.epicenter_selected ||= load_image "images/epicenter_selected.png")
+    @image = (Quake.image ||= load_image "images/epicenter.png")
+    @selected_image = (Quake.selected_image ||= load_image "images/epicenter_selected.png")
     compute_position
   end
   
+  # Compute the 3D Cartesian coordinates of the earthquake's postition as 
+  # plotted on the globe.
   def compute_position
     # The negative and the ninety are the fudge to compensate for our map.
     lat = @latitude_radians = radians(-@latitude)
@@ -38,10 +40,12 @@ class Location
     @z = radius * cos(lat) * cos(long)
   end
   
+  # Is the earthquake hidden from view on the far side of the earth?
   def hidden?
     @hidden
   end
   
+  # Draw the visible earthquakes for display on the globe.
   def draw(selected=false)
     return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
     push_matrix
@@ -52,6 +56,7 @@ class Location
     pop_matrix
   end
   
+  # Draw the earthquakes into the picking buffer for selection.
   def draw_for_picking(index, buffer)
     buffer.push_matrix
     buffer.translate @x, @y, @z

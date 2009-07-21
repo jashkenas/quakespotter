@@ -1,5 +1,5 @@
 # Scraper for geo-located .gov sites, getting us our goodies.
-class DotGov
+class Scraper
   
   SOURCES = {
     :quakes => 'http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml'
@@ -15,7 +15,7 @@ class DotGov
   
   def fetch_earthquakes
     quakes = []
-    xml = File.read('data/quakes.xml') if File.exists?('data/quakes.xml')
+    xml = nil # File.read('data/quakes.xml') if File.exists?('data/quakes.xml')
     xml = open(SOURCES[:quakes]).read unless xml
     doc = Hpricot xml
     
@@ -25,10 +25,10 @@ class DotGov
       mag = title.match(MAGNITUDE_FINDER)[1].to_f
       # Faux Richter-scale adjustments to visual magnitude size.
       mag = (1.85 ** mag) / 3.6 + 2.5
-      quakes << Location.new(point[0], point[1], mag, title)
+      quakes << Quake.new(point[0], point[1], mag, title)
     end
     
-    quakes.sort_by {|loc| loc.longitude }
+    quakes.sort_by {|q| q.longitude }
   end
   
   

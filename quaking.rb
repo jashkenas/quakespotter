@@ -3,14 +3,14 @@ $LOAD_PATH << 'vendor/hpricot/lib'
 require 'open-uri'
 require 'vendor/hpricot/lib/hpricot'
 require 'lib/globe'
-require 'lib/dot_gov'
-require 'lib/location'
+require 'lib/scraper'
+require 'lib/quake'
 
 class WorldWide < Processing::App
 
   load_library 'opengl'
   
-  attr_reader :globe, :locations, :selected
+  attr_reader :globe, :quakes, :selected
         
   def setup
     size(750, 750, OPENGL)
@@ -20,8 +20,8 @@ class WorldWide < Processing::App
     @rot_x, @rot_y = 25, 270 # Center on the ol' US of A.
     @vel_x, @vel_y = 0, 0
     @globe = Globe.new
-    @source = DotGov.new
-    @locations = @source.earthquakes
+    @source = Scraper.new
+    @quakes = @source.earthquakes
     @buffer = create_graphics(width, height, P3D)
     
     no_stroke
@@ -42,7 +42,7 @@ class WorldWide < Processing::App
     @globe.check_visibility if position_changed?
     @globe.draw
     hint(DISABLE_DEPTH_TEST)
-    @locations.each_with_index {|loc, i| loc.draw unless i == @selected }
+    @quakes.each_with_index {|loc, i| loc.draw unless i == @selected }
     selected_quake.draw(true) if selected_quake
     pop_matrix
     fill 200
@@ -52,7 +52,7 @@ class WorldWide < Processing::App
   end
   
   def selected_quake
-    @selected && @locations[@selected]
+    @selected && @quakes[@selected]
   end
   
   def position_changed?
@@ -66,9 +66,9 @@ class WorldWide < Processing::App
     @buffer.translate width/2, height/2, @push_back
     @buffer.rotate_x radians(-@rot_x)
     @buffer.rotate_y radians(270 - @rot_y)
-    @locations.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }
+    @quakes.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }
     result = red(@buffer.get(mouse_x, mouse_y)).to_i
-    @selected = result if @locations[result]
+    @selected = result if @quakes[result]
     @buffer.end_draw
   end
   
@@ -86,7 +86,7 @@ class WorldWide < Processing::App
     return unless [37, 39].include? key_code
     if key_code == 37 # left
       @selected -= 1 if @selected
-      @selected = @locations.length - 1 if !selected_quake
+      @selected = @quakes.length - 1 if !selected_quake
     end
     if key_code == 39 # right
       @selected += 1 if @selected
