@@ -6,11 +6,15 @@
 
 class Location
   
+  class << self
+    attr_accessor :epicenter, :epicenter_selected
+  end
+  
+  HORIZON_Z = 100
+  
   include Processing::Proxy
   include Math
-  
-  HOVER_RADIUS = 4
-  
+    
   attr_reader :latitude, :longitude, :magnitude, :text
   attr_accessor :index
   
@@ -18,6 +22,8 @@ class Location
     @latitude, @longitude = latitude, longitude
     @magnitude, @text = magnitude, text
     @color = color(100, 255, 255, 155)
+    @image = (Location.epicenter ||= load_image "images/epicenter.png")
+    @selected_image = (Location.epicenter_selected ||= load_image "images/epicenter_selected.png")
     compute_position
   end
   
@@ -25,20 +31,19 @@ class Location
     # The negative and the ninety are the fudge to compensate for our map.
     lat = @latitude_radians = radians(-@latitude)
     long = @longitude_radians = radians(@longitude + 90)
-    radius = $app.globe.diameter / 2.0 - 5
+    radius = $app.globe.diameter / 2.0 - 23
     @x = radius * cos(lat) * sin(long)
     @y = radius * sin(lat)
     @z = radius * cos(lat) * cos(long)
   end
   
-  def draw(selected)
-    return unless model_z(@x, @y, @z) > 1
+  def draw(selected=false)
+    return unless model_z(@x, @y, @z) > HORIZON_Z
     push_matrix
     translate @x, @y, @z
-    fill selected ? 255 : @color
     rotate_y @longitude_radians
     rotate_x -@latitude_radians
-    ellipse 0, 0, @magnitude, @magnitude
+    image selected ? @selected_image : @image, 0, 0, @magnitude, @magnitude
     pop_matrix
   end
   

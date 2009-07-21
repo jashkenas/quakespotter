@@ -9,29 +9,39 @@ require 'lib/location'
 class WorldWide < Processing::App
 
   load_library 'opengl', 'control_panel'
+  import "processing.opengl"
+  import "javax.media.opengl"
   
   attr_reader :globe, :selected
+  attr_accessor :constant
         
   def setup
-    size(700, 700, OPENGL)
+    size(750, 750, OPENGL)
     
     @mouse_sensitivity = 0.03
     @push_back = 0
     @rot_x, @rot_y = 25, 270 # Center on the ol' US of A.
     @vel_x, @vel_y = 0, 0
+    @constant = 0
     @globe = Globe.new
     @source = DotGov.new
     @locations = @source.earthquakes
     @buffer = create_graphics(width, height, P3D)
     
+    # control_panel do |c|
+    #   c.slider :constant, 0..200, 0
+    # end
+    
     no_stroke
     smooth
     texture_mode IMAGE
     ellipse_mode CENTER
-    text_font load_font('fonts/Monaco-12.vlw')
+    image_mode   CENTER
+    text_font    load_font('fonts/Monaco-12.vlw')
   end
   
   def draw
+    hint(ENABLE_DEPTH_TEST)
     background 0
     lights
     push_matrix
@@ -40,15 +50,17 @@ class WorldWide < Processing::App
     rotate_y radians(270 - @rot_y)
     @globe.check_visibility if position_changed?
     @globe.draw
-    @locations.each_with_index {|loc, i| loc.draw(i == @selected) }
+    hint(DISABLE_DEPTH_TEST)
+    @locations.each_with_index {|loc, i| loc.draw unless i == @selected }
+    selected_quake.draw(true) if selected_quake
     pop_matrix
     fill 255
     text("#{frame_rate.to_i} FPS", 12, height-30, 0)
-    text(quake.text, 12, height-12, 0) if quake
+    text(selected_quake.text, 12, height-12, 0) if selected_quake
     update_position
   end
   
-  def quake
+  def selected_quake
     @selected && @locations[@selected]
   end
   
@@ -83,14 +95,14 @@ class WorldWide < Processing::App
     return unless [37, 39].include? key_code
     if key_code == 37 # left
       @selected -= 1 if @selected
-      @selected = @locations.length - 1 if !quake
+      @selected = @locations.length - 1 if !selected_quake
     end
     if key_code == 39 # right
       @selected += 1 if @selected
-      @selected = 0 if !quake
+      @selected = 0 if !selected_quake
     end
-    @rot_x = quake.latitude
-    @rot_y = quake.longitude
+    @rot_x = selected_quake.latitude
+    @rot_y = selected_quake.longitude
   end
   
   def update_position

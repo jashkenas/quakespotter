@@ -7,7 +7,7 @@ class Globe
   
   def initialize
     @sphere_detail = 35
-    @diameter = 500
+    @diameter = 600
     @vertices = []
     @visible_vertices = []
     

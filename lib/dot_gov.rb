@@ -24,7 +24,7 @@ class DotGov
       title = (entry / 'title').inner_html
       mag = title.match(MAGNITUDE_FINDER)[1].to_f
       # Faux Richter-scale adjustments to visual magnitude size.
-      mag = (1.85 ** mag) / 3.6 + 1.5
+      mag = (1.85 ** mag) / 3.6 + 2.5
       quakes << Location.new(point[0], point[1], mag, title)
     end
     
