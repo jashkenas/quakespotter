@@ -7,6 +7,7 @@ TODO:
 * Color tint magnitude?
 * Maybe to a z-camera instead of push back -- right now it screws visibility.
 * Smooth scrolling when tabbing between quakes.
+* Lazy-download web resources, cache locally.
 
 
 DONE:
