@@ -41,7 +41,7 @@ class Scraper
   end
   
   def fetch_earthquakes
-    doc = fetch('quakes.xml', true)
+    doc = fetch('quakes.xml')
 
     quakes = (doc / 'entry').map do |entry|
       point = (entry / 'georss:point').inner_html.split(' ').map {|n| n.to_f }
@@ -49,7 +49,7 @@ class Scraper
       mag = title.match(MAGNITUDE_FINDER)[1].to_f
       # Faux Richter-scale adjustments to visual magnitude size.
       mag = (1.9 ** mag) / 3.0 + 2.5
-      quakes << Quake.new(point[0], point[1], mag, title)
+      Quake.new(point[0], point[1], mag, title)
     end
     
     quakes.sort_by {|q| q.longitude }
