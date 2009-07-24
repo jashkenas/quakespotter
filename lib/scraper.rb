@@ -28,9 +28,7 @@ class Scraper
     local_path = "data/sources/#{resource}"
     xml = nil
     begin
-      Timeout.timeout(REQUEST_TIMEOUT) do
-        xml = open(SOURCES[resource]).read
-      end
+      Timeout.timeout(REQUEST_TIMEOUT) { xml = open(SOURCES[resource]).read }
       File.open(local_path, 'w+') {|f| f.write(xml) }
     rescue Timeout::Error, OpenURI::HTTPError => e
       puts "Failed to fetch #{resource} from the web ... falling back to cache."
