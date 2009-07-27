@@ -10,6 +10,7 @@ class Scraper
   }
   
   MAGNITUDE_FINDER = /\AM (\d+\.\d+)/
+  TEXT_FINDER = /\AM \d+\.\d+, (.+)\Z/
   
   REQUEST_TIMEOUT = 10
   
@@ -27,13 +28,13 @@ class Scraper
   def fetch(resource)
     local_path = "data/sources/#{resource}"
     xml = nil
-    begin
-      Timeout.timeout(REQUEST_TIMEOUT) { xml = open(SOURCES[resource]).read }
-      File.open(local_path, 'w+') {|f| f.write(xml) }
-    rescue Timeout::Error, OpenURI::HTTPError => e
-      puts "Failed to fetch #{resource} from the web ... falling back to cache."
+    # begin
+    #   Timeout.timeout(REQUEST_TIMEOUT) { xml = open(SOURCES[resource]).read }
+    #   File.open(local_path, 'w+') {|f| f.write(xml) }
+    # rescue Timeout::Error, OpenURI::HTTPError => e
+    #   puts "Failed to fetch #{resource} from the web ... falling back to cache."
       xml = File.read(local_path) if File.exists? local_path
-    end
+    # end
     raise "Could not fetch #{resource}" unless xml
     Hpricot xml
   end
@@ -43,11 +44,12 @@ class Scraper
 
     quakes = (doc / 'entry').map do |entry|
       point = (entry / 'georss:point').inner_html.split(' ').map {|n| n.to_f }
+      time = Time.parse((entry / 'updated').inner_html)
       title = (entry / 'title').inner_html
+      text = title.match(TEXT_FINDER)[1]
+      text = text[0..0].upcase + text[1..-1]
       mag = title.match(MAGNITUDE_FINDER)[1].to_f
-      # Faux Richter-scale adjustments to visual magnitude size.
-      mag = (1.9 ** mag) / 3.0 + 2.5
-      Quake.new(point[0], point[1], mag, title)
+      Quake.new(point[0], point[1], mag, text, time)
     end
     
     quakes.sort_by {|q| q.longitude }

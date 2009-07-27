@@ -5,6 +5,7 @@ require 'vendor/hpricot/lib/hpricot'
 require 'lib/globe'
 require 'lib/scraper'
 require 'lib/quake'
+require 'lib/control_strip'
 
 class WorldWide < Processing::App
 
@@ -16,38 +17,41 @@ class WorldWide < Processing::App
     size(750, 750, OPENGL)
     
     @mouse_sensitivity = 0.03
-    @push_back = 0
+    @push_up, @push_back = 30, 0
     @rot_x, @rot_y = 25, 270 # Center on the ol' US of A.
     @vel_x, @vel_y = 0, 0
-    @globe = Globe.new
-    @source = Scraper.new
-    @quakes = @source.earthquakes
-    @buffer = create_graphics(width, height, P3D)
+    
+    @globe     = Globe.new
+    @source    = Scraper.new
+    @controls  = ControlStrip.new
+    @starfield = load_image "images/starfield.png"
+    @quakes    = @source.earthquakes
+    @buffer    = create_graphics(width, height, P3D)
     
     no_stroke
     texture_mode IMAGE
     ellipse_mode CENTER
-    image_mode   CENTER
     text_font    load_font('fonts/AkzidenzGrotesk-Bold-14.vlw')
   end
   
   def draw
-    hint(ENABLE_DEPTH_TEST)
+    hint ENABLE_DEPTH_TEST
     background 0
+    image @starfield, 0, 0, width, height
+    fill 255
     lights
+    image_mode CENTER
     push_matrix
-    translate width/2, height/2, @push_back
+    translate width/2, height/2 - @push_up, @push_back
     rotate_x radians(-@rot_x)
     rotate_y radians(270 - @rot_y)
     @globe.check_visibility if position_changed?
     @globe.draw
-    hint(DISABLE_DEPTH_TEST)
+    hint DISABLE_DEPTH_TEST
     @quakes.each_with_index {|loc, i| loc.draw unless i == @selected }
     selected_quake.draw(true) if selected_quake
     pop_matrix
-    fill 200
-    text("#{frame_rate.to_i} FPS", 14, height-34, 0)
-    text(selected_quake.text, 14, height-14, 0) if selected_quake
+    @controls.draw
     update_position
   end
   
@@ -63,7 +67,7 @@ class WorldWide < Processing::App
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
-    @buffer.translate width/2, height/2, @push_back
+    @buffer.translate width/2, height/2 - @push_up, @push_back
     @buffer.rotate_x radians(-@rot_x)
     @buffer.rotate_y radians(270 - @rot_y)
     @quakes.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }

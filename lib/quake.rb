@@ -11,16 +11,19 @@ class Quake
   end
   
   HORIZON_Z = 100
+  TIME_FORMAT = '%l:%M %p, %A %B %e (%Z)'
   
   include Processing::Proxy
   include Math
     
-  attr_reader :latitude, :longitude, :magnitude, :text
+  attr_reader :latitude, :longitude, :magnitude, :text, :time
   attr_accessor :index
   
-  def initialize(latitude, longitude, magnitude, text)
+  def initialize(latitude, longitude, magnitude, text, time)
     @latitude, @longitude = latitude, longitude
-    @magnitude, @text = magnitude, text
+    @magnitude, @text, @time = magnitude, text, time
+    @size = display_size
+    @local_time = time.localtime.strftime TIME_FORMAT
     @hidden = false
     @color = color(100, 255, 255, 155)
     @image = (Quake.image ||= load_image "images/epicenter.png")
@@ -40,9 +43,20 @@ class Quake
     @z = radius * cos(lat) * cos(long)
   end
   
+  # The display size of a quake is a function of the magnitude, adjusted
+  # to compensate for the Richter scale.
+  def display_size
+   (1.9 ** @magnitude) / 3.0 + 2.5
+  end
+  
   # Is the earthquake hidden from view on the far side of the earth?
   def hidden?
     @hidden
+  end
+  
+  # Generate the information for display in the control strip
+  def info
+    @info ||= "Magnitude #{@magnitude}\n#{@text}\n#{@local_time}"
   end
   
   # Draw the visible earthquakes for display on the globe.
@@ -52,7 +66,7 @@ class Quake
     translate @x, @y, @z
     rotate_y @longitude_radians
     rotate_x -@latitude_radians
-    image selected ? @selected_image : @image, 0, 0, @magnitude, @magnitude
+    image selected ? @selected_image : @image, 0, 0, @size, @size
     pop_matrix
   end
   
@@ -63,7 +77,7 @@ class Quake
     buffer.fill index
     buffer.rotate_y @longitude_radians
     buffer.rotate_x -@latitude_radians
-    buffer.ellipse 0, 0, @magnitude, @magnitude
+    buffer.ellipse 0, 0, @size, @size
     buffer.pop_matrix
   end
   
