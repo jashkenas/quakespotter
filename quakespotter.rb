@@ -6,12 +6,13 @@ require 'lib/globe'
 require 'lib/scraper'
 require 'lib/quake'
 require 'lib/control_strip'
+require 'lib/status'
 
 class WorldWide < Processing::App
 
   load_library 'opengl'
   
-  attr_reader :globe, :quakes, :selected
+  attr_reader :globe, :quakes, :selected, :status
         
   def setup
     size(750, 750, OPENGL)
@@ -22,11 +23,14 @@ class WorldWide < Processing::App
     @vel_x, @vel_y = 0, 0
     
     @globe     = Globe.new
-    @source    = Scraper.new
+    @scraper   = Scraper.new
+    @status    = Status.new
     @controls  = ControlStrip.new
     @starfield = load_image "images/starfield.png"
-    @quakes    = @source.earthquakes
     @buffer    = create_graphics(width, height, P3D)
+    @quakes    = []
+    
+    Thread.new { @quakes = @scraper.earthquakes }
     
     no_stroke
     texture_mode IMAGE
@@ -51,7 +55,13 @@ class WorldWide < Processing::App
     @quakes.each_with_index {|loc, i| loc.draw unless i == @selected }
     selected_quake.draw(true) if selected_quake
     pop_matrix
+    @status.draw
     @controls.draw
+    
+    fill 255
+    image_mode CENTER
+    image $map, width/2, height/2, $map.width, $map.height if $map
+    
     update_position
   end
   
@@ -79,6 +89,8 @@ class WorldWide < Processing::App
   def key_pressed
     handle_zoom
     handle_selection
+    @scraper.fetch_map(selected_quake) if key == 'm'
+    link(selected_quake.url) if key == 'l'
   end
   
   def handle_zoom

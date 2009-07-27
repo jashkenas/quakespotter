@@ -16,12 +16,12 @@ class Quake
   include Processing::Proxy
   include Math
     
-  attr_reader :latitude, :longitude, :magnitude, :text, :time
+  attr_reader :latitude, :longitude, :magnitude, :text, :time, :url
   attr_accessor :index
   
-  def initialize(latitude, longitude, magnitude, text, time)
+  def initialize(latitude, longitude, magnitude, text, time, url)
     @latitude, @longitude = latitude, longitude
-    @magnitude, @text, @time = magnitude, text, time
+    @magnitude, @text, @time, @url = magnitude, text, time, url
     @size = display_size
     @local_time = time.localtime.strftime TIME_FORMAT
     @hidden = false
