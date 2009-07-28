@@ -12,7 +12,7 @@ class WorldWide < Processing::App
 
   load_library 'opengl'
   
-  attr_reader :globe, :quakes, :selected, :status
+  attr_reader :globe, :quakes, :selected, :status, :scraper, :controls
         
   def setup
     size(750, 750, OPENGL)
@@ -63,6 +63,7 @@ class WorldWide < Processing::App
     image $map, width/2, height/2, $map.width, $map.height if $map
     
     update_position
+    @controls.detect_mouse_over
   end
   
   def selected_quake
@@ -74,6 +75,7 @@ class WorldWide < Processing::App
   end
   
   def mouse_pressed
+    return if @controls.detect_mouse_click
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -89,8 +91,6 @@ class WorldWide < Processing::App
   def key_pressed
     handle_zoom
     handle_selection
-    @scraper.fetch_map(selected_quake) if key == 'm'
-    link(selected_quake.url) if key == 'l'
   end
   
   def handle_zoom

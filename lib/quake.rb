@@ -46,7 +46,8 @@ class Quake
   # The display size of a quake is a function of the magnitude, adjusted
   # to compensate for the Richter scale.
   def display_size
-   (1.9 ** @magnitude) / 3.0 + 2.5
+   # (1.9 ** @magnitude) / 3.0 + 2.5
+   (2.05 ** @magnitude) / 3.6 + 2.5
   end
   
   # Is the earthquake hidden from view on the far side of the earth?
