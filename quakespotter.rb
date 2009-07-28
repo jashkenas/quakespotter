@@ -75,7 +75,8 @@ class WorldWide < Processing::App
   end
   
   def mouse_pressed
-    return if @controls.detect_mouse_click
+    @controls.detect_mouse_click
+    return if @controls.mouse_over?
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -118,7 +119,7 @@ class WorldWide < Processing::App
     @rot_y += @vel_y
     @vel_x *= 0.9
     @vel_y *= 0.9
-    if mouse_pressed?
+    if mouse_pressed? && !@controls.mouse_over?
       @vel_x += (mouse_y - pmouse_y) * @mouse_sensitivity
       @vel_y -= (mouse_x - pmouse_x) * @mouse_sensitivity
     end

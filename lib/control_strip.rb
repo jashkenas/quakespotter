@@ -25,6 +25,10 @@ class ControlStrip
     end
   end
   
+  def mouse_over?
+    mouse_y > 678
+  end
+  
   def mouse_inside?
     (491..738).include?(mouse_x) && (678..745).include?(mouse_y)
   end
