@@ -5,8 +5,8 @@ require 'uri'
 class Scraper
   
   SOURCES = {
-    'quakes.xml'    => 'http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml',
-    'twitter.json'  => 'http://search.twitter.com/search.json'
+    'quakes'    => 'http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml',
+    'twitter'  => 'http://search.twitter.com/search.atom'
   }
   
   MAGNITUDE_FINDER = /\AM (\d+\.\d+)/
@@ -24,7 +24,7 @@ class Scraper
   
   # Attempt fetch a resource from the web, cache it locally.
   def fetch(resource)
-    local_path = "data/sources/#{resource}"
+    local_path = "data/sources/#{resource}.xml"
     xml = nil
     begin
       if File.mtime(local_path) > (Time.now - 300) # More than 5 minutes ago.
@@ -56,7 +56,7 @@ class Scraper
   
   def fetch_earthquakes
     $app.status.set :earthquakes, "Downloading recent earthquakes..."
-    doc = fetch('quakes.xml')
+    doc = fetch('quakes')
 
     quakes = (doc / 'entry').map do |entry|
       point = (entry / 'georss:point').inner_html.split(' ').map {|n| n.to_f }
@@ -75,10 +75,27 @@ class Scraper
   end
   
   def fetch_tweets(quake)
-    query = {
-      'q' => 'earthquake OR quake OR terremoto OR 地震 OR землетрясение',
-      'geocode' => "#{quake.latitude},#{quake.longitude},100mi"
-    }
+    Thread.new do
+      $app.status.set :earthquakes, "Searching Twitter near #{quake.text}..."
+      query = {
+        'q'       => 'earthquake OR terremoto',
+        'geocode' => "#{quake.latitude},#{quake.longitude},100mi",
+        'since'   => quake.time.strftime('%Y-%m-%d'),
+        'rpp'     => 5
+      }
+      url = SOURCES['twitter'] + query_string(query)
+      doc = Hpricot(open(url).read)
+      
+      quake.tweets = (doc / 'entry').map do |entry|
+        Tweet.new(
+          (entry / '/title').inner_html,
+          (entry / '/author/name').inner_html.match(/\((.+)\)\Z/)[1],
+          (entry / '/link[@rel="image"]').attr('href')
+        )
+      end
+      
+      $app.status.remove :earthquakes
+    end
   end
   
   

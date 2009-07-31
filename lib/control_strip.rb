@@ -30,6 +30,7 @@ class ControlStrip
   end
   
   def mouse_inside?
+    return false unless $app.selected_quake
     (491..738).include?(mouse_x) && (678..745).include?(mouse_y)
   end
   
@@ -38,14 +39,18 @@ class ControlStrip
   end
   
   def detect_mouse_click
-    return false                    unless mouse_inside?
-    return show_map && true         if mouse_x < 491 + 68
-    return puts('Twitter') && true  if mouse_x < 491 + 170
+    return false                  unless mouse_inside?
+    return show_map && true       if mouse_x < 491 + 68
+    return search_twitter && true if mouse_x < 491 + 170
     return usgs_page && true
   end
   
   def show_map
     $app.scraper.fetch_map($app.selected_quake)
+  end
+  
+  def search_twitter
+    $app.scraper.fetch_tweets($app.selected_quake)
   end
   
   def usgs_page

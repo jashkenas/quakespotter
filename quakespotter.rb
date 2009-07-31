@@ -7,6 +7,7 @@ require 'lib/scraper'
 require 'lib/quake'
 require 'lib/control_strip'
 require 'lib/status'
+require 'lib/tweet'
 
 class WorldWide < Processing::App
 
@@ -62,6 +63,8 @@ class WorldWide < Processing::App
     image_mode CENTER
     image $map, width/2, height/2, $map.width, $map.height if $map
     
+    selected_quake.draw_tweets if selected_quake
+    
     update_position
     @controls.detect_mouse_over
   end
@@ -92,6 +95,10 @@ class WorldWide < Processing::App
   def key_pressed
     handle_zoom
     handle_selection
+    if key == 'c'
+      $map = nil
+      selected_quake.tweets = [] if selected_quake
+    end
   end
   
   def handle_zoom

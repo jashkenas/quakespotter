@@ -7,7 +7,7 @@
 class Quake
   
   class << self
-    attr_accessor :image, :selected_image
+    attr_accessor :image, :selected_image, :overlay_image
   end
   
   HORIZON_Z = 100
@@ -17,7 +17,7 @@ class Quake
   include Math
     
   attr_reader :latitude, :longitude, :magnitude, :text, :time, :url
-  attr_accessor :index
+  attr_accessor :index, :tweets
   
   def initialize(latitude, longitude, magnitude, text, time, url)
     @latitude, @longitude = latitude, longitude
@@ -25,9 +25,11 @@ class Quake
     @size = display_size
     @local_time = time.localtime.strftime TIME_FORMAT
     @hidden = false
+    @tweets = []
     @color = color(100, 255, 255, 155)
     @image = (Quake.image ||= load_image "images/epicenter.png")
     @selected_image = (Quake.selected_image ||= load_image "images/epicenter_selected.png")
+    @overlay_image = (Quake.overlay_image ||= load_image "images/overlay.png")
     compute_position
   end
   
@@ -80,6 +82,16 @@ class Quake
     buffer.rotate_x -@latitude_radians
     buffer.ellipse 0, 0, @size, @size
     buffer.pop_matrix
+  end
+  
+  # Draw this quake's tweets in an overlay.
+  def draw_tweets
+    return if @tweets.empty?
+    fill 255
+    img = @overlay_image
+    image_mode Processing::App::CORNER
+    image img, Tweet::LEFT, Tweet::TOP, img.width, img.height
+    @tweets.each_with_index {|tweet, index| tweet.draw(index) }
   end
   
 end

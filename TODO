@@ -1,16 +1,15 @@
 TODO:
-* Nice textual display of info for a quake.
 * Pretty glowing OPENGL bars or mounds coming up out of each quake.
 * Hook into the USGS's ground shake maps ... display 'em.
 * Hook into Twitter Geo Search / Google News
 * Check for memory leaks.
 * Color tint magnitude?
-* Maybe to a z-camera instead of push back -- right now it screws visibility.
 * Smooth scrolling when tabbing between quakes.
 * Lazy-download web resources, cache locally.
 
 
 DONE:
+* Nice textual display of info for a quake.
 * Use arrow keys to tab around quakes, sorted by longitude.
 * Optimize the globe-rendering code.
 * Make some epicenter-y graphics for quake badges.
