@@ -27,7 +27,7 @@ class Scraper
     local_path = "data/sources/#{resource}.xml"
     xml = nil
     begin
-      if File.mtime(local_path) > (Time.now - 300) # More than 5 minutes ago.
+      if File.exists?(local_path) && File.mtime(local_path) > (Time.now - 300) # More than 5 minutes ago.
         puts "Reading #{resource} from the local cache."
         xml = File.read(local_path)
       else
