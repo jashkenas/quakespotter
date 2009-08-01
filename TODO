@@ -1,15 +1,20 @@
 TODO:
 * Pretty glowing OPENGL bars or mounds coming up out of each quake.
-* Hook into the USGS's ground shake maps ... display 'em.
-* Hook into Twitter Geo Search / Google News
+* Nice glassy overlay for maps as well as twitter, with close button. (crop/scale maps).
 * Check for memory leaks.
 * Color tint magnitude?
 * Smooth scrolling when tabbing between quakes.
 * Lazy-download web resources, cache locally.
+* Hook into Google News ?
+* Make a webpage for downloading it.
+* Test on XP and Linux.
+* Fake a progress bar ?
 
 
 DONE:
+* Hook into the USGS's ground shake maps ... display 'em.
 * Nice textual display of info for a quake.
 * Use arrow keys to tab around quakes, sorted by longitude.
 * Optimize the globe-rendering code.
 * Make some epicenter-y graphics for quake badges.
+* Hook into Twitter Geo Search.
