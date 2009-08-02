@@ -5,6 +5,7 @@ require 'vendor/hpricot/lib/hpricot'
 require 'lib/globe'
 require 'lib/scraper'
 require 'lib/quake'
+require 'lib/overlay'
 require 'lib/control_strip'
 require 'lib/status'
 require 'lib/tweet'
@@ -13,7 +14,7 @@ class WorldWide < Processing::App
 
   load_library 'opengl'
   
-  attr_reader :globe, :quakes, :selected, :status, :scraper, :controls
+  attr_reader :globe, :quakes, :selected, :status, :scraper, :controls, :overlay
         
   def setup
     size(750, 750, OPENGL)
@@ -27,6 +28,7 @@ class WorldWide < Processing::App
     @scraper   = Scraper.new
     @status    = Status.new
     @controls  = ControlStrip.new
+    @overlay   = Overlay.new
     @starfield = load_image "images/starfield.png"
     @buffer    = create_graphics(width, height, P3D)
     @quakes    = []
@@ -59,14 +61,16 @@ class WorldWide < Processing::App
     @status.draw
     @controls.draw
     
-    fill 255
-    image_mode CENTER
-    image $map, width/2, height/2, $map.width, $map.height if $map
-    
-    selected_quake.draw_tweets if selected_quake
+    if selected_quake
+      @overlay.draw_tweets_for_quake(selected_quake)
+      @overlay.draw_map_for_quake(selected_quake)
+    end
     
     update_position
-    @controls.detect_mouse_over
+    
+    cursor ARROW
+    @controls.detect_mouse_over 
+    @overlay.detect_mouse_over
   end
   
   def selected_quake
@@ -78,8 +82,9 @@ class WorldWide < Processing::App
   end
   
   def mouse_pressed
+    @overlay.detect_mouse_click
     @controls.detect_mouse_click
-    return if @controls.mouse_over?
+    return if @controls.mouse_over? || @overlay.mouse_over?
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -126,7 +131,7 @@ class WorldWide < Processing::App
     @rot_y += @vel_y
     @vel_x *= 0.9
     @vel_y *= 0.9
-    if mouse_pressed? && !@controls.mouse_over?
+    if mouse_pressed? && !@controls.mouse_over? && !@overlay.mouse_over?
       @vel_x += (mouse_y - pmouse_y) * @mouse_sensitivity
       @vel_y -= (mouse_x - pmouse_x) * @mouse_sensitivity
     end

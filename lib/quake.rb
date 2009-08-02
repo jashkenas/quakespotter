@@ -84,14 +84,4 @@ class Quake
     buffer.pop_matrix
   end
   
-  # Draw this quake's tweets in an overlay.
-  def draw_tweets
-    return if @tweets.empty?
-    fill 255
-    img = @overlay_image
-    image_mode Processing::App::CORNER
-    image img, Tweet::LEFT, Tweet::TOP, img.width, img.height
-    @tweets.each_with_index {|tweet, index| tweet.draw(index) }
-  end
-  
 end

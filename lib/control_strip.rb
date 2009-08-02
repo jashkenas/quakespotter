@@ -35,7 +35,7 @@ class ControlStrip
   end
   
   def detect_mouse_over
-    cursor mouse_inside? ? HAND : ARROW
+    cursor HAND if mouse_inside? 
   end
   
   def detect_mouse_click

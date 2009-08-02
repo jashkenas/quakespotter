@@ -1,6 +1,6 @@
 TODO:
 * Pretty glowing OPENGL bars or mounds coming up out of each quake.
-* Nice glassy overlay for maps as well as twitter, with close button. (crop/scale maps).
+* (crop/scale maps).
 * Check for memory leaks.
 * Color tint magnitude?
 * Smooth scrolling when tabbing between quakes.
@@ -12,6 +12,7 @@ TODO:
 
 
 DONE:
+* Nice glassy overlay for maps as well as twitter, with close button. 
 * Hook into the USGS's ground shake maps ... display 'em.
 * Nice textual display of info for a quake.
 * Use arrow keys to tab around quakes, sorted by longitude.
