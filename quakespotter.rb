@@ -9,6 +9,7 @@ require 'lib/overlay'
 require 'lib/control_strip'
 require 'lib/status'
 require 'lib/tweet'
+require 'lib/map'
 
 class WorldWide < Processing::App
 
@@ -102,9 +103,9 @@ class WorldWide < Processing::App
   def key_pressed
     handle_zoom
     handle_selection
-    if key == 'c'
-      $map = nil
-      selected_quake.tweets = [] if selected_quake
+    if key == 'c' && selected_quake
+      selected_quake.map = nil
+      selected_quake.tweets = []
     end
   end
   

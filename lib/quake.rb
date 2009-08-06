@@ -17,7 +17,7 @@ class Quake
   include Math
     
   attr_reader :latitude, :longitude, :magnitude, :text, :time, :url
-  attr_accessor :index, :tweets
+  attr_accessor :index, :tweets, :map
   
   def initialize(latitude, longitude, magnitude, text, time, url)
     @latitude, @longitude = latitude, longitude

@@ -49,9 +49,9 @@ class Scraper
       html = Hpricot(open(quake.url).read)
       src = (html / "//li/a/img[@alt='Earthquake Location Maps']").attr('src')
       src.sub!('_small.gif', '.jpg')
-      $map = $app.load_image(src)
+      quake.map = Map.new(src)
       $app.status.remove :earthquakes
-    end
+    end.join
   end
   
   def fetch_earthquakes

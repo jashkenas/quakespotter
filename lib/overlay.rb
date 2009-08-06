@@ -3,6 +3,8 @@ class Overlay
   
   CLOSE_BUTTON_LEFT = 593
   CLOSE_BUTTON_TOP  = 133
+  INNER_WIDTH       = 450
+  INNER_HEIGHT      = 350
   
   class << self
     attr_accessor :image, :close_button_image
@@ -29,18 +31,19 @@ class Overlay
   end
   
   def draw_map_for_quake(quake)
-    return unless $map
+    return unless map = quake.map
     @quake = quake
     draw
     @visible = true
     image_mode Processing::App::CORNER
-    image $map, 150, 160, $map.width/1.8, $map.height/1.8 if $map
+    factor = map.scale_factor(INNER_WIDTH, INNER_HEIGHT)
+    image map.image, 150, 160, map.width/factor, map.height/factor
   end
   
   def hide
     @visible = false
     @quake.tweets = []
-    $map = nil
+    @quake.map = nil
   end
   
   def detect_mouse_click
