@@ -51,7 +51,7 @@ class Scraper
       src.sub!('_small.gif', '.jpg')
       quake.map = Map.new(src)
       $app.status.remove :earthquakes
-    end.join
+    end
   end
   
   def fetch_earthquakes
