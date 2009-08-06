@@ -62,15 +62,27 @@ class Quake
     @info ||= "Magnitude #{@magnitude}\n#{@text}\n#{@local_time}"
   end
   
+  # OLD DRAW METHOD
+  # Draw the visible earthquakes for display on the globe.
+  # def draw(selected=false)
+  #   return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
+  #   push_matrix
+  #   translate @x, @y, @z
+  #   rotate_y @longitude_radians
+  #   rotate_x -@latitude_radians
+  #   image selected ? @selected_image : @image, 0, 0, @size, @size
+  #   pop_matrix
+  # end
+
   # Draw the visible earthquakes for display on the globe.
   def draw(selected=false)
     return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
-    push_matrix
-    translate @x, @y, @z
-    rotate_y @longitude_radians
-    rotate_x -@latitude_radians
-    image selected ? @selected_image : @image, 0, 0, @size, @size
-    pop_matrix
+    if selected 
+      @size = @size * 1.15 if @size < display_size * 2
+    else
+      @size = @size / 1.15 if @size > display_size
+    end
+    quake_2d(selected)
   end
   
   # Draw the earthquakes into the picking buffer for selection.
@@ -82,6 +94,38 @@ class Quake
     buffer.rotate_x -@latitude_radians
     buffer.ellipse 0, 0, @size, @size
     buffer.pop_matrix
+  end
+  
+  def quake_2d(selected=false)
+    push_matrix
+    translate @x, @y, @z
+    rotate_y @longitude_radians
+    rotate_x -@latitude_radians
+    fill(255, 255, 255, 200)
+    # center
+    ellipse(0, 0, @size/12, @size/12)
+    no_fill
+    stroke(255, 255, 255)
+
+    rings = selected ?
+      [[5, color(87,205,255)], [2, color(0,132,255)], 
+      [1.25, color(0, 210, 255)],
+      [1, color(0,255,255)]] :
+      [[5, color(0,186,255, 200)], [2, color(183,255,175, 200)], 
+      [1.25, color(255, 255, 255, 200)],
+      [1, color(255,255,255, 200)]]
+    #rings
+    rings.each do |s|
+      ellipse_mode(CENTER)
+      stroke(s[1])
+      ellipse(0, 0, @size/s[0], @size/s[0])
+    end
+    no_stroke
+    pop_matrix
+  end
+  
+  def quake_3d
+    
   end
   
 end

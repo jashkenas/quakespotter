@@ -57,6 +57,7 @@ class WorldWide < Processing::App
     hint DISABLE_DEPTH_TEST
     @quakes.each_with_index {|loc, i| loc.draw unless i == @selected }
     selected_quake.draw(true) if selected_quake
+    
     pop_matrix
     @status.draw
     @controls.draw
@@ -85,6 +86,7 @@ class WorldWide < Processing::App
     @overlay.detect_mouse_click
     @controls.detect_mouse_click
     return if @controls.mouse_over? || @overlay.mouse_over?
+    @selected = nil
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -121,17 +123,30 @@ class WorldWide < Processing::App
       @selected += 1 if @selected
       @selected = 0 if !selected_quake
     end
-    @rot_x = selected_quake.latitude
-    @rot_y = selected_quake.longitude
+    @seeking = true
   end
   
   def update_position
-    @p_rot_x, @p_rot_y = @rot_x, @rot_y
-    @rot_x += @vel_x
-    @rot_y += @vel_y
-    @vel_x *= 0.9
-    @vel_y *= 0.9
+    # seek the selected quake
+    if @seeking && selected_quake && selected_quake.latitude && selected_quake.longitude
+      dx = selected_quake.latitude - @rot_x
+      @rot_x += (dx * 0.15) if dx.abs >= 1
+      @rot_x = selected_quake.latitude if dx.abs < 1
+
+      dy = selected_quake.longitude - @rot_y
+      @rot_y += (dy * 0.15) if dy.abs >= 1
+      @rot_y = selected_quake.longitude if dy.abs < 1 
+        
+      @seeking = false if (dx.abs < 1 && dy.abs < 1)
+    else
+      @p_rot_x, @p_rot_y = @rot_x, @rot_y
+      @rot_x += @vel_x
+      @rot_y += @vel_y
+      @vel_x *= 0.9
+      @vel_y *= 0.9
+    end
     if mouse_pressed? && !@controls.mouse_over? && !@overlay.mouse_over?
+      @seeking = false
       @vel_x += (mouse_y - pmouse_y) * @mouse_sensitivity
       @vel_y -= (mouse_x - pmouse_x) * @mouse_sensitivity
     end

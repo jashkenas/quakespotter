@@ -3,7 +3,6 @@ TODO:
 * (crop/scale maps).
 * Check for memory leaks.
 * Color tint magnitude?
-* Smooth scrolling when tabbing between quakes.
 * Lazy-download web resources, cache locally.
 * Hook into Google News ?
 * Make a webpage for downloading it.
@@ -12,6 +11,7 @@ TODO:
 
 
 DONE:
+* Smooth scrolling when tabbing between quakes.
 * Nice glassy overlay for maps as well as twitter, with close button. 
 * Hook into the USGS's ground shake maps ... display 'em.
 * Nice textual display of info for a quake.
