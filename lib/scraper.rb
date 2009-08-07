@@ -93,8 +93,11 @@ class Scraper
           (entry / '/link[@rel="image"]').attr('href')
         )
       end
-      
-      $app.status.remove :earthquakes
+      if quake.tweets.empty?
+        $app.status.set :earthquakes, "No tweets found.  Try searching large quakes near \nconcentrations of tech-savvy urban hipsters.", 4
+      else
+        $app.status.remove :earthquakes
+      end
     end
   end
   

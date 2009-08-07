@@ -15,7 +15,7 @@ class WorldWide < Processing::App
 
   load_library 'opengl'
   
-  attr_reader :globe, :quakes, :selected, :status, :scraper, :controls, :overlay
+  attr_reader :globe, :quakes, :selected, :status, :scraper, :controls, :overlay, :font
         
   def setup
     size(750, 750, OPENGL)
@@ -39,7 +39,8 @@ class WorldWide < Processing::App
     no_stroke
     texture_mode IMAGE
     ellipse_mode CENTER
-    text_font    load_font('fonts/AkzidenzGrotesk-Bold-14.vlw')
+    @font = load_font('fonts/AkzidenzGrotesk-Bold-14.vlw')
+    text_font @font
   end
   
   def draw
