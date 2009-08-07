@@ -27,10 +27,12 @@ class Quake
     @local_time = time.localtime.strftime TIME_FORMAT
     @hidden = false
     @tweets = []
+    @rings = []
     @color = color(100, 255, 255, 155)
     @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=9"
     @title = title
     @google_news_url = "http://news.google.com?&q=#{CGI.escape(@text + " earthquake")}"
+    set_size
     compute_position
   end
   
@@ -63,6 +65,14 @@ class Quake
     @info ||= "Magnitude #{@magnitude}\n#{@text}\n#{@local_time}"
   end
   
+  def set_size(selected=false)
+    if selected 
+      @size = @size * 1.15 if @size < display_size * 2
+    else
+      @size = @size / 1.15 if @size > display_size
+    end
+  end
+  
   # OLD DRAW METHOD
   # Draw the visible earthquakes for display on the globe.
   # def draw(selected=false)
@@ -78,11 +88,7 @@ class Quake
   # Draw the visible earthquakes for display on the globe.
   def draw(selected=false)
     return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
-    if selected 
-      @size = @size * 1.15 if @size < display_size * 2
-    else
-      @size = @size / 1.15 if @size > display_size
-    end
+    set_size(selected)
     quake_animated(selected)
   end
   
@@ -126,17 +132,17 @@ class Quake
   end
   
   def quake_animated(selected=false)
+    size_12 = @size / 12
     push_matrix
     translate @x, @y, @z
     rotate_y  @longitude_radians
     rotate_x -@latitude_radians
-    @rings ||= []
-    fill(255)
-    ellipse(0,0, @size/12, @size/12)
+    fill 255
+    ellipse 0, 0, size_12, size_12
     no_fill
-    stroke(255)
+    stroke 255
     if @rings.size < 4 && !@rings.first || @rings.first > @size/8
-      @rings.unshift(@size/12)
+      @rings.unshift(size_12)
     end
     
     @rings.pop if @rings.last >= @size
