@@ -28,7 +28,7 @@ class Quake
     @hidden = false
     @tweets = []
     @color = color(100, 255, 255, 155)
-    @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=12"
+    @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=9"
     @title = title
     @google_news_url = "http://news.google.com?&q=#{CGI.escape(@text + " earthquake")}"
     compute_position
