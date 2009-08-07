@@ -41,7 +41,7 @@ class Overlay
     image_mode Processing::App::CORNER
     factor = map.scale_factor(INNER_WIDTH, INNER_HEIGHT)
     @map_width, @map_height = map.width/factor, map.height/factor
-    image map.image, 150, 160, @map_width, @map_height
+    image map.image, 370 - @map_width/2, 160, @map_width, @map_height
     @showing_map = true
   end
   
