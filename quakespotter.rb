@@ -84,10 +84,10 @@ class WorldWide < Processing::App
   end
   
   def mouse_pressed
-    @overlay.detect_mouse_click
+    overlay_clicked = @overlay.detect_mouse_click
     @controls.detect_mouse_click
     return if @controls.mouse_over? || @overlay.mouse_over?
-    @selected = nil
+    @selected = nil unless overlay_clicked
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke

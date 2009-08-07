@@ -28,6 +28,7 @@ class Overlay
     draw 
     @visible = true
     @quake.tweets.each_with_index {|tweet, index| tweet.draw(index) }
+    @showing_tweets = true
   end
   
   def draw_map_for_quake(quake)
@@ -37,21 +38,32 @@ class Overlay
     @visible = true
     image_mode Processing::App::CORNER
     factor = map.scale_factor(INNER_WIDTH, INNER_HEIGHT)
-    image map.image, 150, 160, map.width/factor, map.height/factor
+    @map_width, @map_height = map.width/factor, map.height/factor
+    image map.image, 150, 160, @map_width, @map_height
+    @showing_map = true
   end
   
   def hide
+    @showing_map = false
+    @showing_tweets = false
     @visible = false
     @quake.tweets = []
     @quake.map = nil
   end
   
   def detect_mouse_click
+    return false unless mouse_over?
     hide if mouse_inside_close_button?
+    link(@quake.google_map_url) if @showing_map && mouse_inside_map?
+    return true
   end
   
   def detect_mouse_over
-    cursor HAND if mouse_inside_close_button?
+    cursor HAND if mouse_inside_close_button? || mouse_inside_map?
+  end
+  
+  def mouse_inside_map?
+    @visible && @showing_map && mouse_x > 150 && (mouse_x < 150 + @map_width) && mouse_y > 160 && (mouse_y < 160 + @map_height)
   end
   
   def mouse_inside_close_button?

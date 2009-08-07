@@ -7,7 +7,7 @@
 class Quake
   
   class << self
-    attr_accessor :image, :selected_image, :overlay_image
+    attr_accessor :image, :selected_image
   end
   
   HORIZON_Z = 120
@@ -16,7 +16,7 @@ class Quake
   include Processing::Proxy
   include Math
     
-  attr_reader :latitude, :longitude, :magnitude, :text, :time, :url
+  attr_reader :latitude, :longitude, :magnitude, :text, :time, :url, :google_map_url
   attr_accessor :index, :tweets, :map
   
   def initialize(latitude, longitude, magnitude, text, time, url)
@@ -27,9 +27,7 @@ class Quake
     @hidden = false
     @tweets = []
     @color = color(100, 255, 255, 155)
-    @image = (Quake.image ||= load_image "images/epicenter.png")
-    @selected_image = (Quake.selected_image ||= load_image "images/epicenter_selected.png")
-    @overlay_image = (Quake.overlay_image ||= load_image "images/overlay.png")
+    @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=12"
     compute_position
   end
   

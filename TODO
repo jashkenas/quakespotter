@@ -1,16 +1,18 @@
 TODO:
-* Pretty glowing OPENGL bars or mounds coming up out of each quake.
-* (crop/scale maps).
 * Check for memory leaks.
-* Color tint magnitude?
 * Lazy-download web resources, cache locally.
 * Hook into Google News ?
-* Make a webpage for downloading it.
 * Test on XP and Linux.
 * Fake a progress bar ?
-
+------------
+* Color tint magnitude?
+* Pretty glowing OPENGL bars or mounds coming up out of each quake.
 
 DONE:
+* google maps loaded when you click on a map
+* Animated quakes
+* Make a webpage for downloading it.
+* (crop/scale maps).
 * Smooth scrolling when tabbing between quakes.
 * Nice glassy overlay for maps as well as twitter, with close button. 
 * Hook into the USGS's ground shake maps ... display 'em.
