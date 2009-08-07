@@ -62,6 +62,8 @@ class Overlay
     @map_clicked_at ||= [0,0]
     if @showing_map && mouse_inside_map? && (mouse_x != @map_clicked_at[0] || mouse_y != @map_clicked_at[1])
       @map_clicked_at = [mouse_x, mouse_y]
+      puts @quake.google_news_url
+      link(@quake.google_news_url) 
       link(@quake.google_map_url) 
     end
     return true

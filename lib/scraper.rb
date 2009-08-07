@@ -66,7 +66,7 @@ class Scraper
       text  = title.match(TEXT_FINDER)[1]
       text  = text[0..0].upcase + text[1..-1]
       mag   = title.match(MAGNITUDE_FINDER)[1].to_f
-      Quake.new(point[0], point[1], mag, text, time, url)
+      Quake.new(point[0], point[1], mag, text, time, url, title)
     end
     
     quakes = quakes.sort_by {|q| q.longitude }

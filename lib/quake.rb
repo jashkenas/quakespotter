@@ -3,6 +3,7 @@
 # y = r * sin(lat)
 # z = r * cos(lat) * cos(long)
 # where r is radius, lat is latitude and long is longitude
+require 'cgi'
 
 class Quake
   
@@ -16,10 +17,10 @@ class Quake
   include Processing::Proxy
   include Math
     
-  attr_reader :latitude, :longitude, :magnitude, :text, :time, :url, :google_map_url
+  attr_reader :latitude, :longitude, :magnitude, :text, :time, :url, :google_map_url, :google_news_url, :title
   attr_accessor :index, :tweets, :map
   
-  def initialize(latitude, longitude, magnitude, text, time, url)
+  def initialize(latitude, longitude, magnitude, text, time, url, title=nil)
     @latitude, @longitude = latitude, longitude
     @magnitude, @text, @time, @url = magnitude, text, time, url
     @size = display_size
@@ -28,6 +29,8 @@ class Quake
     @tweets = []
     @color = color(100, 255, 255, 155)
     @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=12"
+    @title = title
+    @google_news_url = "http://news.google.com?&q=#{CGI.escape(@text + " earthquake")}"
     compute_position
   end
   
