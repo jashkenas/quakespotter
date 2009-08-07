@@ -49,7 +49,7 @@ class Quake
   # to compensate for the Richter scale.
   def display_size
    # (1.9 ** @magnitude) / 3.0 + 2.5
-   (2.05 ** @magnitude) / 3.6 + 2.5
+   (2.15 ** @magnitude) / 3.6 + 2.5
   end
   
   # Is the earthquake hidden from view on the far side of the earth?
@@ -82,7 +82,7 @@ class Quake
     else
       @size = @size / 1.15 if @size > display_size
     end
-    quake_2d(selected)
+    quake_animated(selected)
   end
   
   # Draw the earthquakes into the picking buffer for selection.
@@ -124,8 +124,40 @@ class Quake
     pop_matrix
   end
   
-  def quake_3d
+  def quake_animated(selected=false)
+    push_matrix
+    translate @x, @y, @z
+    rotate_y  @longitude_radians
+    rotate_x -@latitude_radians
+    @rings ||= []
+    fill(255)
+    ellipse(0,0, @size/12, @size/12)
+    no_fill
+    stroke(255)
+    if @rings.size < 4 && !@rings.first || @rings.first > @size/8
+      @rings.unshift(@size/12)
+    end
     
+    @rings.pop if @rings.last >= @size
+    
+    rate = random(1.01,1.03)
+    @rings = @rings.inject([]) do |m, r|
+      f = (r/@size)
+      
+      if selected
+        stroke(255 - f*255,90 -f*90,255,255 - f*255)
+      else
+        stroke(255,255,255,255 - f*255)
+      end
+      
+      stroke_weight(f*4)
+      ellipse(0,0,r,r)
+      r *= rate
+      m << r if r < @size
+      m
+    end
+    pop_matrix
+    no_stroke
   end
   
 end
