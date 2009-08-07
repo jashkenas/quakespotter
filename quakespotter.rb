@@ -69,10 +69,7 @@ class WorldWide < Processing::App
     end
     
     update_position
-    
-    cursor ARROW
-    @controls.detect_mouse_over 
-    @overlay.detect_mouse_over
+    cursor @controls.mouse_inside? || @overlay.mouse_inside? ? HAND : ARROW
   end
   
   def selected_quake
@@ -87,7 +84,6 @@ class WorldWide < Processing::App
     overlay_clicked = @overlay.detect_mouse_click
     @controls.detect_mouse_click
     return if @controls.mouse_over? || @overlay.mouse_over?
-    @selected = nil unless overlay_clicked || @overlay.visible
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -95,9 +91,15 @@ class WorldWide < Processing::App
     @buffer.rotate_x radians(-@rot_x)
     @buffer.rotate_y radians(270 - @rot_y)
     @quakes.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }
-    result = red(@buffer.get(mouse_x, mouse_y)).to_i
-    @selected = result if @quakes[result]
     @buffer.end_draw
+    result = red(@buffer.get(mouse_x, mouse_y)).to_i
+    @quake_candidate = @quakes[result]
+    @selected = result if @quake_candidate
+  end
+  
+  def mouse_clicked
+    not_a_drag = dist(mouse_x, mouse_y, pmouse_x, pmouse_y) < 2.5
+    @selected = nil if !@quake_candidate && not_a_drag
   end
   
   def key_pressed

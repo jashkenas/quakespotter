@@ -34,10 +34,6 @@ class ControlStrip
     (491..738).include?(mouse_x) && (678..745).include?(mouse_y)
   end
   
-  def detect_mouse_over
-    cursor HAND if mouse_inside? 
-  end
-  
   def detect_mouse_click
     return false                  unless mouse_inside?
     return show_map && true       if mouse_x < 491 + 68
