@@ -1,7 +1,6 @@
 TODO:
 * Check for memory leaks.
 * Lazy-download web resources, cache locally.
-* Hook into Google News ?
 * Test on XP and Linux.
 * Fake a progress bar ?
 ------------
@@ -10,6 +9,7 @@ TODO:
 
 DONE:
 * search google news
+* Hook into Google News ?
 * google maps loaded when you click on a map
 * Animated quakes
 * Make a webpage for downloading it.
