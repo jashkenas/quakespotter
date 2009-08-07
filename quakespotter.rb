@@ -103,17 +103,11 @@ class WorldWide < Processing::App
   end
   
   def key_pressed
-    handle_zoom
     handle_selection
     if key == 'c' && selected_quake
       selected_quake.map = nil
       selected_quake.tweets = []
     end
-  end
-  
-  def handle_zoom
-    @push_back += 3 if key == '='
-    @push_back -= 3 if key == '-'
   end
   
   def handle_selection
