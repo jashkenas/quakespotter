@@ -68,8 +68,8 @@ class Overlay
     return true
   end
   
-  def detect_mouse_over
-    cursor HAND if mouse_inside_close_button? || mouse_inside_map?
+  def mouse_inside?
+    mouse_inside_close_button? || mouse_inside_map?
   end
   
   def mouse_inside_map?
