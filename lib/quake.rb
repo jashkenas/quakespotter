@@ -10,7 +10,7 @@ class Quake
     attr_accessor :image, :selected_image, :overlay_image
   end
   
-  HORIZON_Z = 100
+  HORIZON_Z = 120
   TIME_FORMAT = '%l:%M %p, %A %B %e (%Z)'
   
   include Processing::Proxy
