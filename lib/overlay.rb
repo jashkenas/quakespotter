@@ -10,6 +10,8 @@ class Overlay
     attr_accessor :image, :close_button_image
   end
   
+  attr_reader :visible
+  
   def initialize
     @image = (Overlay.image ||= load_image "images/overlay.png")
     @close_button_image = (Overlay.close_button_image ||= load_image "images/close_button.png")
@@ -52,9 +54,16 @@ class Overlay
   end
   
   def detect_mouse_click
+    if mouse_inside_close_button?
+      hide 
+      return true
+    end
     return false unless mouse_over?
-    hide if mouse_inside_close_button?
-    link(@quake.google_map_url) if @showing_map && mouse_inside_map?
+    @map_clicked_at ||= [0,0]
+    if @showing_map && mouse_inside_map? && (mouse_x != @map_clicked_at[0] || mouse_y != @map_clicked_at[1])
+      @map_clicked_at = [mouse_x, mouse_y]
+      link(@quake.google_map_url) 
+    end
     return true
   end
   
