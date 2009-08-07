@@ -15,7 +15,6 @@ class Globe
     @sin_cos_precision = 0.5
     @sin_cos_length = (360.0 / @sin_cos_precision).to_i
     
-    # @texmap = load_image "globes/land_ocean_ice_2048.jpg"
     @texmap = load_image "globes/globe_merged.png"
     initialize_sphere
     compute_vertices
