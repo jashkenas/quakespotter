@@ -29,7 +29,7 @@ class Quake
     @image = Quake.image ||= load_image('images/epicenter.png')
     @hidden = false
     @tweets = []
-    @rings = []
+    @rings = [1, 2, 3, 5, 7]
     @color = color(100, 255, 255, 155)
     @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=9&t=h"
     @title = title
@@ -127,6 +127,7 @@ class Quake
     translate @x, @y, @z
     rotate_y @longitude_radians
     rotate_x -@latitude_radians
+    fill 255
     image @image, 0, 0, @size, @size
     pop_matrix
   end
@@ -147,7 +148,6 @@ class Quake
     
     @rings.pop if @rings.last >= @size
     
-    # rate = random(1.01,1.03)
     new_rings = []
     @rings.each do |r|
       f = (r/@size)
