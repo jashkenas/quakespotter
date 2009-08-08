@@ -130,9 +130,9 @@ class WorldWide < Processing::App
     # seek the selected quake
     if @seeking && selected_quake && selected_quake.latitude && selected_quake.longitude
       dx = selected_quake.latitude - @rot_x
-      @rot_x += (dx * 0.15) if dx.abs >= 1
+      @rot_x += (dx * 0.1) if dx.abs >= 1
       dy = selected_quake.longitude - @rot_y
-      @rot_y += (dy * 0.15) if dy.abs >= 1
+      @rot_y += (dy * 0.1) if dy.abs >= 1
       @seeking = false if (dx.abs < 1 && dy.abs < 1)
     else
       @p_rot_x, @p_rot_y = @rot_x, @rot_y
