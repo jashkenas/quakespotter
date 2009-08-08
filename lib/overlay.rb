@@ -43,6 +43,7 @@ class Overlay
     @map_width, @map_height = map.width/factor, map.height/factor
     image map.image, 370 - @map_width/2, 160, @map_width, @map_height
     @showing_map = true
+    text("google news  |  google maps", 282, 505)
   end
   
   def hide
@@ -60,20 +61,32 @@ class Overlay
     end
     return false unless mouse_over?
     @map_clicked_at ||= [0,0]
-    if @showing_map && mouse_inside_map? && (mouse_x != @map_clicked_at[0] || mouse_y != @map_clicked_at[1])
+    if @showing_map && (mouse_x != @map_clicked_at[0] || mouse_y != @map_clicked_at[1])
       @map_clicked_at = [mouse_x, mouse_y]
-      link(@quake.google_news_url) 
-      link(@quake.google_map_url) 
+      link(@quake.google_news_url) if mouse_inside_news_link?
+      link(@quake.google_map_url) if mouse_inside_maps_link?
     end
     return true
   end
   
+  def map_open?
+    @visible && @showing_map
+  end
+  
   def mouse_inside?
-    mouse_inside_close_button? || mouse_inside_map?
+    mouse_inside_close_button? || mouse_inside_map? || mouse_inside_news_link? || mouse_inside_maps_link?
   end
   
   def mouse_inside_map?
-    @visible && @showing_map && mouse_x > 150 && (mouse_x < 150 + @map_width) && mouse_y > 160 && (mouse_y < 160 + @map_height)
+    map_open? && mouse_x > 150 && (mouse_x < 150 + @map_width) && mouse_y > 160 && (mouse_y < 160 + @map_height)
+  end
+  
+  def mouse_inside_news_link?
+    map_open? && mouse_x > 283 && mouse_x < 363 && mouse_y > 490 && mouse_y < 510
+  end
+  
+  def mouse_inside_maps_link?
+    map_open? && mouse_x > 379 && mouse_x < 460 && mouse_y > 490 && mouse_y < 510
   end
   
   def mouse_inside_close_button?

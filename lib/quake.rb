@@ -31,7 +31,7 @@ class Quake
     @tweets = []
     @rings = []
     @color = color(100, 255, 255, 155)
-    @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=9"
+    @google_map_url = "http://maps.google.com/?ie=UTF8&ll=#{@latitude},#{@longitude}&z=9&t=h"
     @title = title
     @google_news_url = "http://news.google.com?&q=#{CGI.escape(@text + " earthquake")}&as_minm=#{time.month}&as_mind=#{time.day}&as_maxm=#{time.month}&as_maxd=#{time.day+3}&as_epq=&as_oq=&as_eq=&as_scoring=r&as_qdr=m&as_drrb=b"
     compute_position

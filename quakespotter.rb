@@ -70,7 +70,7 @@ class WorldWide < Processing::App
     end
     
     update_position
-    cursor @controls.mouse_inside? || @overlay.mouse_inside? ? HAND : ARROW
+    cursor (@controls.mouse_inside? || @overlay.mouse_inside?) ? HAND : ARROW
   end
   
   def selected_quake
