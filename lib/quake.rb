@@ -8,10 +8,11 @@ require 'cgi'
 class Quake
   
   class << self
-    attr_accessor :image, :selected_image
+    attr_accessor :image
   end
   
   HORIZON_Z = 120
+  MIN_ANIMATED_SIZE = 7
   TIME_FORMAT = '%l:%M %p, %A %B %e (%Z)'
   
   include Processing::Proxy
@@ -25,6 +26,7 @@ class Quake
     @magnitude, @text, @time, @url = magnitude, text, time, url
     @size = display_size
     @local_time = time.localtime.strftime TIME_FORMAT
+    @image = Quake.image ||= load_image('images/epicenter.png')
     @hidden = false
     @tweets = []
     @rings = []
@@ -71,24 +73,14 @@ class Quake
       @size = @size / 1.15 if @size > display_size
     end
   end
-  
-  # OLD DRAW METHOD
-  # Draw the visible earthquakes for display on the globe.
-  # def draw(selected=false)
-  #   return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
-  #   push_matrix
-  #   translate @x, @y, @z
-  #   rotate_y @longitude_radians
-  #   rotate_x -@latitude_radians
-  #   image selected ? @selected_image : @image, 0, 0, @size, @size
-  #   pop_matrix
-  # end
 
   # Draw the visible earthquakes for display on the globe.
   def draw(selected=false)
     return if @hidden = model_z(@x, @y, @z) < HORIZON_Z
     set_size(selected)
-    quake_animated(selected)
+    selected || @size > MIN_ANIMATED_SIZE ? 
+      quake_animated(selected) : 
+      quake_miniature(selected)
   end
   
   # Draw the earthquakes into the picking buffer for selection.
@@ -127,6 +119,15 @@ class Quake
       ellipse(0, 0, @size/s[0], @size/s[0])
     end
     no_stroke
+    pop_matrix
+  end
+
+  def quake_miniature(selected=false)
+    push_matrix
+    translate @x, @y, @z
+    rotate_y @longitude_radians
+    rotate_x -@latitude_radians
+    image @image, 0, 0, @size, @size
     pop_matrix
   end
   

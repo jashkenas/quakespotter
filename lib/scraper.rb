@@ -28,15 +28,12 @@ class Scraper
     xml = nil
     begin
       if File.exists?(local_path) && File.mtime(local_path) > (Time.now - 300) # More than 5 minutes ago.
-        puts "Reading #{resource} from the local cache."
         xml = File.read(local_path)
       else
-        puts "Fetching #{resource} from the web."
         Timeout.timeout(REQUEST_TIMEOUT) { xml = open(SOURCES[resource]).read }
         File.open(local_path, 'w+') {|f| f.write(xml) }
       end
     rescue Timeout::Error, OpenURI::HTTPError => e
-      puts "Failed to fetch #{resource} from the web ... falling back to cache."
       xml = File.read(local_path) if File.exists? local_path
     end
     raise "Could not fetch #{resource}" unless xml
