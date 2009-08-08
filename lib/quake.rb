@@ -158,7 +158,7 @@ class Quake
         stroke(255, 255, 255, intensity)
       end
       
-      stroke_weight(f*4)
+      stroke_weight(f*4*(@magnitude/6))
       ellipse(0,0,r,r)
       new_r = r * 1.02
       new_rings << new_r if new_r < @size
