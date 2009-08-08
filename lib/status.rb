@@ -22,7 +22,6 @@ class Status
     values = @statuses.clone.inject([]){|m,p|
       k,v=*p
       if v.is_a?(Array) && Time.now > v[1]
-        puts v[1]
         remove(k)
       else
         m << (v.is_a?(Array) ? v[0] : v)
