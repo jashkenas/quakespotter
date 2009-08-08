@@ -81,9 +81,10 @@ class WorldWide < Processing::App
   end
   
   def mouse_pressed
-    overlay_clicked = @overlay.detect_mouse_click
+    @over_ui = @controls.mouse_over? || @overlay.mouse_over?
+    @overlay.detect_mouse_click
     @controls.detect_mouse_click
-    return if @controls.mouse_over? || @overlay.mouse_over?
+    return if @over_ui
     @buffer.begin_draw
     @buffer.background 255
     @buffer.no_stroke
@@ -98,6 +99,7 @@ class WorldWide < Processing::App
   end
   
   def mouse_clicked
+    return if @over_ui
     not_a_drag = dist(mouse_x, mouse_y, pmouse_x, pmouse_y) < 2.5
     @selected = nil if !@quake_candidate && not_a_drag
   end
