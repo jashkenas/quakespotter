@@ -4,7 +4,7 @@ class Overlay
   CLOSE_BUTTON_LEFT = 593
   CLOSE_BUTTON_TOP  = 133
   INNER_WIDTH       = 450
-  INNER_HEIGHT      = 350
+  INNER_HEIGHT      = 320
   
   class << self
     attr_accessor :image, :close_button_image

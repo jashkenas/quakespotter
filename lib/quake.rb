@@ -156,7 +156,7 @@ class Quake
         stroke(255,255,255,255 - f*255)
       end
       
-      stroke_weight(f*4)
+      stroke_weight(f*4*(@magnitude/6))
       ellipse(0,0,r,r)
       r *= rate
       m << r if r < @size
