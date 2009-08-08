@@ -146,22 +146,24 @@ class Quake
     
     @rings.pop if @rings.last >= @size
     
-    rate = random(1.01,1.03)
-    @rings = @rings.inject([]) do |m, r|
+    # rate = random(1.01,1.03)
+    new_rings = []
+    @rings.each do |r|
       f = (r/@size)
+      intensity = 255 - f * 255
       
       if selected
-        stroke(255 - f*255,90 -f*90,255,255 - f*255)
+        stroke(intensity, 90-f*90, 255, intensity)
       else
-        stroke(255,255,255,255 - f*255)
+        stroke(255, 255, 255, intensity)
       end
       
       stroke_weight(f*4*(@magnitude/6))
       ellipse(0,0,r,r)
-      r *= rate
-      m << r if r < @size
-      m
+      new_r = r * 1.02
+      new_rings << new_r if new_r < @size
     end
+    @rings = new_rings
     pop_matrix
     no_stroke
   end
