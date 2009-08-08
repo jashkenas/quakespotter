@@ -28,7 +28,7 @@ class Status
       end
       m
     }
-    (values << "#{frame_rate.to_i} FPS").join("\n")
+    values.join("\n")
   end
   
   def draw
