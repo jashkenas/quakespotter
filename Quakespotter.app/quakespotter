@@ -1,0 +1,4 @@
+#!/bin/sh
+APPDIR=$(dirname "$0")
+cd "$APPDIR/lib"
+java -cp "core/jruby-complete.jar" org.jruby.Main ruby-processing/runners/run.rb quakespotter.rb
