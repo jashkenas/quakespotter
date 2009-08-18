@@ -87,7 +87,7 @@ class Quake
   def draw_for_picking(index, buffer)
     buffer.push_matrix
     buffer.translate @x, @y, @z
-    buffer.fill index
+    buffer.fill $app.index_to_color(index)
     buffer.rotate_y @longitude_radians
     buffer.rotate_x -@latitude_radians
     buffer.ellipse 0, 0, @size, @size

@@ -81,6 +81,16 @@ class WorldWide < Processing::App
     @rot_x.to_i != @p_rot_x.to_i || @rot_y.to_i != @p_rot_y.to_i
   end
   
+  def index_to_color(index)
+    r, g = *index.divmod(255)
+    color(r, g, 0)
+  end
+  
+  def color_to_index(color)
+    r, g = red(color), green(color)
+    r * 255 + g
+  end
+  
   def mouse_pressed
     @over_ui = @controls.mouse_over? || @overlay.mouse_over?
     @overlay.detect_mouse_click
@@ -94,7 +104,7 @@ class WorldWide < Processing::App
     @buffer.rotate_y radians(270 - @rot_y)
     @quakes.each_with_index {|l, i| l.draw_for_picking(i, @buffer) unless l.hidden? }
     @buffer.end_draw
-    result = red(@buffer.get(mouse_x, mouse_y)).to_i
+    result = color_to_index(@buffer.get(mouse_x, mouse_y)).to_i
     @quake_candidate = @quakes[result]
     @selected = result if @quake_candidate
   end
